@@ -30,14 +30,15 @@ questionList.push(new Question(
     ["1. JavaScript", "2. Terminal / Bash", "3. for loops", "4. console.log"],
     "4. console.log"));
 
-var unansweredQuestionList = null;
-var currentQuestionIndex = null;
-var currentQuestion = null;
+var unansweredQuestionList;
+var currentQuestionIndex;
+var currentQuestion;
 
-var correct = 0;
-var timeStarted = 0;
-var totalTime = 0;
+var correct;
+var timeStarted;
+var totalTime;
 var highscores = "";
+
 if(localStorage.getItem("highscores") !== ""){
     highscores = localStorage.getItem("highscores");
 }
@@ -85,6 +86,11 @@ function stopTime(){
 
 var timerInterval;
 var secondsLeft;
+var answerInfoEl = document.createElement("h3");;
+var choice1 = document.createElement("button");
+var choice2 = document.createElement("button");
+var choice3 = document.createElement("button");
+var choice4 = document.createElement("button");
 
 function nextQuestion() {
     clearMain();
@@ -92,10 +98,6 @@ function nextQuestion() {
     currentQuestion = unansweredQuestionList[currentQuestionIndex];
     var questionEl = document.createElement("h1");
     var ulEl = document.createElement("ul");
-    var choice1 = document.createElement("button");
-    var choice2 = document.createElement("button");
-    var choice3 = document.createElement("button");
-    var choice4 = document.createElement("button");
  
     questionEl.textContent = currentQuestion.questionString
     choice1.textContent = currentQuestion.answerList[0];
@@ -109,15 +111,22 @@ function nextQuestion() {
     ulEl.appendChild(choice2);
     ulEl.appendChild(choice3);
     ulEl.appendChild(choice4);
+    mainEl.appendChild(answerInfoEl);
 
-    choice1.addEventListener("click", checkanswer);
-    choice2.addEventListener("click", checkanswer);
-    choice3.addEventListener("click", checkanswer);
-    choice4.addEventListener("click", checkanswer);
+    choice1.addEventListener("mouseup", checkanswer);
+    choice2.addEventListener("mouseup", checkanswer);
+    choice3.addEventListener("mouseup", checkanswer);
+    choice4.addEventListener("mouseup", checkanswer);
+
+    choice1.setAttribute("style", "background-color: purple;")
+    choice2.setAttribute("style", "background-color: purple;")
+    choice3.setAttribute("style", "background-color: purple;")
+    choice4.setAttribute("style", "background-color: purple;")
 
     secondsLeft = 15;
     timerEl.textContent = secondsLeft + " seconds left";
     timerInterval = setInterval(function() {
+        answerInfoEl.textContent = "";
         secondsLeft--;
         timerEl.textContent = secondsLeft + " seconds left";
         if(secondsLeft === 0){
@@ -135,17 +144,39 @@ function nextQuestion() {
 
 function checkanswer(event) {
     clearInterval(timerInterval);
+    answerInfoEl.setAttribute("style", "visibility:visible;")
     if(currentQuestion.correctAnswer === event.target.innerHTML){
+        event.target.setAttribute("style", "background-color:green;")
+        answerInfoEl.textContent = "Correct!"
         correct++;
     } else {
-        //manipulate DOM to display //false
+        event.target.setAttribute("style", "background-color:red;")
+        answerInfoEl.textContent = "Wrong!"
     }
-    unansweredQuestionList.splice(currentQuestionIndex, 1);
-    if(unansweredQuestionList[0]){
-        nextQuestion();
-    } else{
-        stopTime();
-    }
+    choice1.removeEventListener("mouseup", checkanswer);
+    choice2.removeEventListener("mouseup", checkanswer);
+    choice3.removeEventListener("mouseup", checkanswer);
+    choice4.removeEventListener("mouseup", checkanswer);
+    displayAnswer();
+}
+
+function displayAnswer(){
+    secondsLeft = 1;
+    answerInterval = setInterval(function() {
+        answerInfoEl.textContent = "";
+        answerInfoEl.setAttribute("style", "visibility:hidden;")
+        secondsLeft--;
+        timerEl.textContent = secondsLeft + " seconds left";
+        if(secondsLeft === 0){
+            clearInterval(answerInterval);
+            unansweredQuestionList.splice(currentQuestionIndex, 1);
+            if(unansweredQuestionList[0]){
+                nextQuestion();
+            } else{
+                stopTime();
+            }
+        }
+    }, 1000);
 }
 
 function printResult() {
@@ -184,7 +215,7 @@ function printResult() {
     }
 
 function logScore(newScore) {
-    scoreStr = newScore.usrName + " " + newScore.percent + "% " + newScore.timeTaken + " seconds,"
+    scoreStr = newScore.usrName + ":" + newScore.percent + ":" + newScore.timeTaken + ";"
     highscores = highscores + scoreStr;
     localStorage.setItem("highscores", highscores);
     viewHighscores();
@@ -217,25 +248,48 @@ function printHighscores() {
     var scoreBoard = document.createElement("ol");
     mainEl.appendChild(scoreBoard);
 
-    var scoreArray = highscores.split(",");
+    var scoreStrArray = highscores.split(";");
+    var scoreObjArray = [];
 
-    //because every score str has a comma at the end there will always be an extra element with nothing in it in the score array hence length-1
-    for(var i = 0; i < scoreArray.length - 1; i++) {
+
+    //because every score str has a semicolen at the end there will always be an extra element with nothing in it in the score array hence length-1
+    for(var i = 0; i < scoreStrArray.length -1; i++){
+        var temp = (scoreStrArray[i].split(":"));
+        scoreObjArray.push(new Score(temp[0], (temp[1] *1 ), (temp[2] * 1)));
+    }
+
+    var scoreArrayOrdered = [];
+
+    var i = 0;
+    while(i < scoreObjArray.length) {
+        var indexOfBest = 0;
+        for(var j = 0; j < scoreObjArray.length; j++) {
+            if(scoreObjArray[j].percent > scoreObjArray[indexOfBest].percent) {
+                indexOfBest = j;
+            } else if (scoreObjArray[j].percent === scoreObjArray[indexOfBest].percent && scoreObjArray[j].timeTaken < scoreObjArray[indexOfBest].timeTaken){
+                indexOfBest = j;
+            }
+        }
+        scoreArrayOrdered.push(scoreObjArray[indexOfBest]);
+        scoreObjArray.splice(indexOfBest, 1);
+    }
+
+    for(var i = 0; i < scoreArrayOrdered.length; i++) {
         var score = document.createElement("li");
-        score.textContent = scoreArray[i];
+        score.textContent = scoreArrayOrdered[i].usrName + ": " + scoreArrayOrdered[i].percent + "% in " + scoreArrayOrdered[i].timeTaken + " seconds";
         scoreBoard.appendChild(score);
     }
 }
 
 function clearMain() {
     while(mainEl.firstChild) {
-        mainEl.removeChild(mainEl.firstChild)
+        mainEl.removeChild(mainEl.firstChild);
     }
 }
 
 function clearHeader() {
     while(headerEl.firstChild) {
-        headerEl.removeChild(headerEl.firstChild)
+        headerEl.removeChild(headerEl.firstChild);
     }
 }
 
