@@ -1,0 +1,66 @@
+header {
+    margin-bottom: 5%;
+    display: flex;
+    justify-content: space-between;
+}
+
+header p {
+    color: red;
+    font-size: larger;
+    font-weight: bolder;
+    width: fit-content;
+    margin-top: 0;
+}
+
+header a {
+    color: blue;
+    font-size: larger;
+    font-weight: bolder;
+    width: fit-content;
+}
+
+header a:hover {
+    color: purple;
+}
+
+main {
+    text-align: center;
+}
+
+main p {
+    margin: 10% 20%;
+}
+
+button {
+    color: white;
+    background-color: purple;
+    padding: 10px;
+    font-weight: bolder;
+    border-radius: 10px;
+    margin: 2px 50px;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+}
+
+ul button {
+    text-align: left;
+    width: 180px;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form p,
+form button {
+    margin: 0 10px;
+}
+
+form button {
+    padding: 3px 15px;
+}
