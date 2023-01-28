@@ -50,10 +50,32 @@ ul button {
     width: 180px;
 }
 
+
+h3 {
+    text-align: left;
+    border-top-style: solid;
+    border-top-width: 2px;
+    color: lightslategray;
+    border-top-color: lightslategray;
+    visibility: hidden;
+}
+
+
 form {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+ol {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+ol li {
+    width: 70%;
+    background-color: rgb(189, 67, 189);
 }
 
 form p,
