@@ -121,12 +121,16 @@ function nextQuestion() {
     choice3.addEventListener("mouseup", checkanswer);
     choice4.addEventListener("mouseup", checkanswer);
 
-    choice1.setAttribute("style", "background-color: purple;")
-    choice2.setAttribute("style", "background-color: purple;")
-    choice3.setAttribute("style", "background-color: purple;")
-    choice4.setAttribute("style", "background-color: purple;")
+    choice1.addEventListener("mouseenter", turnPink);
+    choice1.addEventListener("mouseleave", turnPurple);
+    choice2.addEventListener("mouseenter", turnPink);
+    choice2.addEventListener("mouseleave", turnPurple);
+    choice3.addEventListener("mouseenter", turnPink);
+    choice3.addEventListener("mouseleave", turnPurple);
+    choice4.addEventListener("mouseenter", turnPink);
+    choice4.addEventListener("mouseleave", turnPurple);
 
-    secondsLeft = 15;
+    secondsLeft = 20;
     timerEl.textContent = secondsLeft + " seconds left";
     timerInterval = setInterval(function() {
         answerInfoEl.textContent = "";
@@ -134,40 +138,55 @@ function nextQuestion() {
         timerEl.textContent = secondsLeft + " seconds left";
         if(secondsLeft === 0){
             clearInterval(timerInterval);
-            alert("You ran out of time! Moving on to the next question...");
             unansweredQuestionList.splice(currentQuestionIndex, 1);
             if(unansweredQuestionList[0]){
+                alert("You ran out of time! Moving on to the next question...");
                 nextQuestion();
             } else{
+                alert("You ran out of time! Click okay to view your results.")
                 stopTime();
             }
         }
     }, 1000);
 }
 
-function checkanswer(event) {
-    clearInterval(timerInterval);
-    answerInfoEl.setAttribute("style", "visibility:visible;")
-    if(currentQuestion.correctAnswer === event.target.innerHTML){
-        event.target.setAttribute("style", "background-color:green;")
-        answerInfoEl.textContent = "Correct!"
-        correct++;
-    } else {
-        event.target.setAttribute("style", "background-color:red;")
-        answerInfoEl.textContent = "Wrong!"
-    }
-    choice1.removeEventListener("mouseup", checkanswer);
-    choice2.removeEventListener("mouseup", checkanswer);
-    choice3.removeEventListener("mouseup", checkanswer);
-    choice4.removeEventListener("mouseup", checkanswer);
-    displayAnswer();
+function turnPink (event){
+    event.target.setAttribute("style", "background-color: pink;");
 }
 
-function displayAnswer(){
+function turnPurple (event){
+    event.target.setAttribute("style", "background-color: purple;")
+}
+
+function checkanswer(event) {
+    clearInterval(timerInterval);
+    if(currentQuestion.correctAnswer === event.target.innerHTML){
+        event.target.setAttribute("style", "background-color:green;");
+        answerInfoEl.textContent = "Correct!";
+        answerInfoEl.setAttribute("style", "visibility:visible; color:green");
+        correct++;
+    } else {
+        event.target.setAttribute("style", "background-color:red;");
+        answerInfoEl.textContent = "Wrong!";
+        answerInfoEl.setAttribute("style", "visibility:visible; color:red");
+    }
+    event.target.removeEventListener("mouseleave", turnPurple);
+    choice1.removeEventListener("mouseup", checkanswer);
+    choice1.removeEventListener("mouseenter", turnPink);
+    choice2.removeEventListener("mouseup", checkanswer);
+    choice2.removeEventListener("mouseenter", turnPink);
+    choice3.removeEventListener("mouseup", checkanswer);
+    choice3.removeEventListener("mouseenter", turnPink);
+    choice4.removeEventListener("mouseup", checkanswer);
+    choice4.removeEventListener("mouseenter", turnPink);
+    displayAnswer(event);
+}
+
+function displayAnswer(event){
     secondsLeft = 1;
     answerInterval = setInterval(function() {
-        answerInfoEl.textContent = "";
-        answerInfoEl.setAttribute("style", "visibility:hidden;")
+        answerInfoEl.setAttribute("style", "visibility:hidden;");
+        event.target.setAttribute("style", "background-color: purple;");
         secondsLeft--;
         timerEl.textContent = secondsLeft + " seconds left";
         if(secondsLeft === 0){
@@ -194,7 +213,7 @@ function printResult() {
     
 
     resultHeader.textContent = "Quiz finished!";
-    resultScore.textContent = "You finished with a score of " + correct + "/5 in " + totalTime + " seconds.";
+    resultScore.textContent = "You finished with a score of " + correct + "/" + questionList.length + " in " + totalTime + " seconds.";
     inputInfo.textContent = "Enter your name: ";
     submitResult.textContent = "Submit";
     
@@ -209,7 +228,7 @@ function printResult() {
         event.preventDefault();
         var percentCorrect = 0;
         if(correct > 0) {
-            percentCorrect = (correct / 5) * 100;
+            percentCorrect = (correct / questionList.length) * 100;
         }
 
         var usrScore = new Score(nameInput.value, percentCorrect, totalTime);
@@ -303,6 +322,4 @@ function clearHeader() {
     }
 }
 
-
 goToStart();
-
