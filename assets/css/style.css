@@ -21,6 +21,7 @@ header a {
 
 header a:hover {
     color: purple;
+    cursor: pointer;
 }
 
 main {
@@ -42,6 +43,11 @@ button {
     font-weight: bolder;
     border-radius: 10px;
     margin: 2px 50px;
+    cursor: pointer;
+}
+
+button:hover{
+    background-color: pink;
 }
 
 ul {
@@ -66,7 +72,7 @@ h3 {
     width: 56%;
     margin-left: 22%;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    padding: 3px 0 0 3px;
+    padding: 3px 0 0 5px;
     font-size: x-large;
     visibility: hidden;
 }
