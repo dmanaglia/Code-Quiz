@@ -39,7 +39,7 @@ var timeStarted;
 var totalTime;
 var highscores = "";
 
-if(localStorage.getItem("highscores") !== ""){
+if(localStorage.getItem("highscores")){
     highscores = localStorage.getItem("highscores");
 }
 
@@ -67,6 +67,8 @@ function goToStart() {
     mainEl.appendChild(welcomeHeader);
     mainEl.appendChild(welcomePara);
     mainEl.appendChild(startQuizBtn);
+
+    welcomePara.setAttribute("id", "startPara");
 
     startQuizBtn.addEventListener("click", startTime);
     unansweredQuestionList = questionList.slice(0);
@@ -106,6 +108,7 @@ function nextQuestion() {
     choice4.textContent = currentQuestion.answerList[3];
 
     mainEl.appendChild(questionEl);
+    questionEl.setAttribute("style", "text-align:left; margin-bottom:0;");
     mainEl.appendChild(ulEl);
     ulEl.appendChild(choice1);
     ulEl.appendChild(choice2);
@@ -232,52 +235,59 @@ function viewHighscores() {
     goBack.textContent = "Go Back";
     clearHighscores.textContent = "Clear Highscores";
     mainEl.appendChild(scoreBoardH1);
+    scoreBoardH1.setAttribute("id", "scoreBoard");
     printHighscores();
     mainEl.appendChild(goBack);
     mainEl.appendChild(clearHighscores);
 
     goBack.addEventListener("click", goToStart);
     clearHighscores.addEventListener("click", function() {
-        highscores = "";
-        localStorage.setItem("highscores", highscores);
+        if (highscores) {
+            if (confirm("Are you sure you want to clear all scores?")) {
+                highscores = "";
+                localStorage.setItem("highscores", highscores);
+            }
+        }
         viewHighscores();
     });
 }
 
 function printHighscores() {
-    var scoreBoard = document.createElement("ol");
-    mainEl.appendChild(scoreBoard);
+    if(highscores){
+        var scoreBoard = document.createElement("ol");
+        mainEl.appendChild(scoreBoard);
 
-    var scoreStrArray = highscores.split(";");
-    var scoreObjArray = [];
+        var scoreStrArray = highscores.split(";");
+        var scoreObjArray = [];
 
 
-    //because every score str has a semicolen at the end there will always be an extra element with nothing in it in the score array hence length-1
-    for(var i = 0; i < scoreStrArray.length -1; i++){
-        var temp = (scoreStrArray[i].split(":"));
-        scoreObjArray.push(new Score(temp[0], (temp[1] *1 ), (temp[2] * 1)));
-    }
-
-    var scoreArrayOrdered = [];
-
-    var i = 0;
-    while(i < scoreObjArray.length) {
-        var indexOfBest = 0;
-        for(var j = 0; j < scoreObjArray.length; j++) {
-            if(scoreObjArray[j].percent > scoreObjArray[indexOfBest].percent) {
-                indexOfBest = j;
-            } else if (scoreObjArray[j].percent === scoreObjArray[indexOfBest].percent && scoreObjArray[j].timeTaken < scoreObjArray[indexOfBest].timeTaken){
-                indexOfBest = j;
-            }
+        //because every score str has a semicolen at the end there will always be an extra element with nothing in it in the score array hence length-1
+        for(var i = 0; i < scoreStrArray.length -1; i++){
+            var temp = (scoreStrArray[i].split(":"));
+            scoreObjArray.push(new Score(temp[0], (temp[1] *1 ), (temp[2] * 1)));
         }
-        scoreArrayOrdered.push(scoreObjArray[indexOfBest]);
-        scoreObjArray.splice(indexOfBest, 1);
-    }
 
-    for(var i = 0; i < scoreArrayOrdered.length; i++) {
-        var score = document.createElement("li");
-        score.textContent = scoreArrayOrdered[i].usrName + ": " + scoreArrayOrdered[i].percent + "% in " + scoreArrayOrdered[i].timeTaken + " seconds";
-        scoreBoard.appendChild(score);
+        var scoreArrayOrdered = [];
+
+        var i = 0;
+        while(i < scoreObjArray.length) {
+            var indexOfBest = 0;
+            for(var j = 0; j < scoreObjArray.length; j++) {
+                if(scoreObjArray[j].percent > scoreObjArray[indexOfBest].percent) {
+                    indexOfBest = j;
+                } else if (scoreObjArray[j].percent === scoreObjArray[indexOfBest].percent && scoreObjArray[j].timeTaken < scoreObjArray[indexOfBest].timeTaken){
+                    indexOfBest = j;
+                }
+            }
+            scoreArrayOrdered.push(scoreObjArray[indexOfBest]);
+            scoreObjArray.splice(indexOfBest, 1);
+        }
+
+        for(var i = 0; i < scoreArrayOrdered.length; i++) {
+            var score = document.createElement("li");
+            score.textContent = scoreArrayOrdered[i].usrName + ": " + scoreArrayOrdered[i].percent + "% in " + scoreArrayOrdered[i].timeTaken + " seconds";
+            scoreBoard.appendChild(score);
+        }
     }
 }
 
