@@ -1,9 +1,10 @@
+/* adjusts header so it is flex with space-between so the link and timer elements are each on seperate sides */
 header {
     margin-bottom: 5%;
     display: flex;
     justify-content: space-between;
 }
-
+/* styling for the timer element */
 header p {
     color: red;
     font-size: larger;
@@ -11,31 +12,31 @@ header p {
     width: fit-content;
     margin-top: 0;
 }
-
+/* styling for the link 'View Highscore in the top left of webpage */
 header a {
     color: blue;
     font-size: larger;
     font-weight: bolder;
     width: fit-content;
 }
-
+/* hover psuedo class which changes the color of text and the cursor from default text to a pointer */
 header a:hover {
     color: purple;
     cursor: pointer;
 }
-
+/* default style for most main displays throughout script */
 main {
     text-align: center;
 }
-
+/* default title spacing for the h1 elements which are all titles of their respective pages */
 main h1 {
     margin: 10% 20% 5% 22%;
 }
-
+/* default spacing for most p tag elements appended to the main */
 main p {
     margin: 5% 25%;
 }
-
+/* styling for all buttons appended throughout script */
 button {
     color: white;
     background-color: purple;
@@ -45,24 +46,27 @@ button {
     margin: 2px 50px;
     cursor: pointer;
 }
-
+/* psuedo class for all buttons */
+/* this psuedo class is overriden and will not return if a buttons background color is changed in script */
+/* so for the choice1-4 buttons I added event listeners "mouseenter" and "mouseleave" which act exactly like hover */
 button:hover{
     background-color: pink;
 }
-
+/* only unordered list appended is the list containing all the choice buttons */
+/* Made it so the buttons are stacked one on top of the other and some unique spacing to look better */
 ul {
     display: flex;
     flex-direction: column;
     padding-inline-start: 3%;
 }
-
+/* unique styling, spacing and sizing for the choice buttons so they are all the same */
 ul button {
     text-align: left;
     width: 180px;
     margin-left: 20%;
 }
-
-
+/* the only h3 is the answerInfoEl appended underneath the choice buttons in script */
+/* h3 reveals the answer after user makes an answer choice so its default visibility is hidden */
 h3 {
     text-align: left;
     border-top-style: solid;
@@ -76,25 +80,38 @@ h3 {
     font-size: x-large;
     visibility: hidden;
 }
-
-
+/* only one form element appended in script when the quiz is complete */
+/* sets uniques spacing for the items in the form so they are all in one line */
 form {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
-#scoreBoard {
-    margin: 0 0 3% 0;
+/* unique styling for the child elements in the form */
+/* I played around a lot with these but left them rather simple */
+form p,
+form button {
+    margin: 0 10px;
 }
 
+form button {
+    padding: 3px 15px;
+}
+/* h1 displayed over the scoreBoardEl */
+/* Because I needed some unique spacing I gave it a unique id */
+/* didnt need to much styling though so I could have done this in script */
+#scoreBoardH1 {
+    margin: 0 0 3% 0;
+}
+/* only one ordered list appended in script for the highscores list */
+/* sets unique spacing for the ordered list element */
 ol {
     display: flex;
     justify-content: center;
     flex-direction: column;
     padding-left: 0;
 }
-
+/* default styling, spacing and sizing for all list elements in the ordered list */
 ol li {
     width: 70%;
     background-color: rgb(210, 128, 210);
@@ -110,16 +127,23 @@ ol li {
     margin-left: 30%;
     min-width: fit-content;
 }
-
-form p,
-form button {
-    margin: 0 10px;
+/* for the first element since it is the top score I made the background color gold */
+ol li:nth-child(1) {
+    background-color: goldenrod;
+    color: black;
 }
-
-form button {
-    padding: 3px 15px;
+/* silver for the second to best score */
+ol li:nth-child(2) {
+    background-color: silver;
+    color: black;
 }
-
+/* a bronzish color for the third best score */
+ol li:nth-child(3) {
+    background-color: #b59163;
+    color: black;
+}
+/* A minor media query that changes the start page p tag to expand so its not too narrow */
+/* and changes the highscore list elements spacing so they are shifted a little left */
 @media screen and (max-width: 425px) {
     #startPara {
         margin: 10% 5%;
